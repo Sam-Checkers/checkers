@@ -30,7 +30,6 @@ const CheckersPiece = ({ color }) => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      {/* You can customize the appearance of the piece here */}
     </div>
   );
 };

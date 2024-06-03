@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CheckersPiece from './checkerspiece';
-import './checkersboard.css'; // Import the CSS file for styling
+import './checkersboard.css';
 
 
 const CheckersBoard = () => {
@@ -35,18 +35,26 @@ const CheckersBoard = () => {
 
   const handlePieceMove = (position) => {
     if (selectedPiece === null) {
-      // If no piece is selected, set the selected piece
       setSelectedPiece(position);
     } else {
-      // Move the piece to the new position
-      const updatedPieces = pieces.map((piece) => {
-        if (piece.position === selectedPiece) {
-          return { ...piece, position: position };
-        }
-        return piece;
-      });
-      setPieces(updatedPieces);
-      setSelectedPiece(null); // Reset selected piece
+      // Convert the position strings to row and column numbers
+      const [selectedRow, selectedCol] = selectedPiece.split('-').map(Number);
+      const [newRow, newCol] = position.split('-').map(Number);
+  
+      // Check if the new position is adjacent to the current position
+      if (Math.abs(selectedRow - newRow) === 1 && Math.abs(selectedCol - newCol) === 1) {
+        const updatedPieces = pieces.map((piece) => {
+          if (piece.position === selectedPiece) {
+            return { ...piece, position: position };
+          }
+          return piece;
+        });
+        setPieces(updatedPieces);
+        setSelectedPiece(null);
+      } else {
+        // Handle invalid move (e.g., show an error message)
+        console.log('Invalid move: Pieces can only move to adjacent squares');
+      }
     }
   };
 
@@ -54,7 +62,6 @@ const CheckersBoard = () => {
     const board = [];
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
-        // Determine the color of the square based on row and column
         const squareColor = (row + col) % 2 === 0 ? 'light' : 'dark';
         const position = `${row}-${col}`;
         const piece = pieces.find((p) => p.position === position);
