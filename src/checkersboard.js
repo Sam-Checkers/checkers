@@ -38,26 +38,62 @@ const CheckersBoard = () => {
       setSelectedPiece(position);
     } else {
       // Convert the position strings to row and column numbers
-      const [selectedRow, selectedCol] = selectedPiece.split('-').map(Number);
       const [newRow, newCol] = position.split('-').map(Number);
   
-      // Check if the new position is adjacent to the current position
-      if (Math.abs(selectedRow - newRow) === 1 && Math.abs(selectedCol - newCol) === 1) {
-        const updatedPieces = pieces.map((piece) => {
-          if (piece.position === selectedPiece) {
-            return { ...piece, position: position };
+      // Check if there is already a piece at the new position
+      const isOccupied = pieces.some((piece) => piece.position === position);
+  
+      if (!isOccupied) {
+        // Additional check for valid move and capturing opponent's piece
+        const [selectedRow, selectedCol] = selectedPiece.split('-').map(Number);
+        const selectedPieceObj = pieces.find((piece) => piece.position === selectedPiece);
+        const opponentPiece = pieces.find((piece) => piece.position === `${(newRow + selectedRow) / 2}-${(newCol + selectedCol) / 2}`);
+  
+        if (
+          (selectedPieceObj.color === 'red' && newRow > selectedRow) ||
+          (selectedPieceObj.color === 'black' && newRow < selectedRow)
+        ) {
+          if (
+            Math.abs(selectedRow - newRow) === 2 &&
+            Math.abs(selectedCol - newCol) === 2 &&
+            opponentPiece &&
+            opponentPiece.color !== selectedPieceObj.color
+          ) {
+            const updatedPieces = pieces.map((piece) => {
+              if (piece.position === selectedPiece) {
+                return { ...piece, position: position };
+              }
+              if (piece.position === opponentPiece.position) {
+                return { ...piece, position: 'captured' }; // Remove the captured piece from the board
+              }
+              return piece;
+            });
+            setPieces(updatedPieces.filter((piece) => piece.position !== 'captured')); // Filter out the captured piece
+            setSelectedPiece(null);
+          } else if (Math.abs(selectedRow - newRow) === 1 && Math.abs(selectedCol - newCol) === 1) {
+            const updatedPieces = pieces.map((piece) => {
+              if (piece.position === selectedPiece) {
+                return { ...piece, position: position };
+              }
+              return piece;
+            });
+            setPieces(updatedPieces);
+            setSelectedPiece(null);
+          } else {
+            // Handle invalid move (e.g., show an error message)
+            console.log('Invalid move: Pieces can only move forward to adjacent squares or capture opponent\'s piece');
           }
-          return piece;
-        });
-        setPieces(updatedPieces);
-        setSelectedPiece(null);
+        } else {
+          // Handle invalid move (e.g., show an error message)
+          console.log('Invalid move: Pieces cannot move backward');
+        }
       } else {
         // Handle invalid move (e.g., show an error message)
-        console.log('Invalid move: Pieces can only move to adjacent squares');
+        console.log('Invalid move: The square is already occupied');
       }
     }
   };
-
+  
   const renderBoard = () => {
     const board = [];
     for (let row = 0; row < 8; row++) {
