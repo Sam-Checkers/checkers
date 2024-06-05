@@ -2,8 +2,8 @@
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    width: 400px; /* Adjust the width to fit your design */
-    height: 400px; /* Adjust the height to fit your design */
+    width: 400px;
+    height: 400px;
   }
   
   .square {
@@ -12,11 +12,11 @@
   }
   
   .light {
-    background-color: #f0d9b5; /* Light square color */
+    background-color: #f0d9b5;
   }
   
   .dark {
-    background-color: #b58863; /* Dark square color */
+    background-color: #b58863;
   }
 
   .piece {
@@ -27,9 +27,9 @@
   }
   
   .red {
-    background-color: #ff0000; /* Red piece color */
+    background-color: #ff0000;
   }
   
   .black {
-    background-color: #000000; /* Black piece color */
+    background-color: #000000;
   }

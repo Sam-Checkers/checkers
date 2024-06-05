@@ -1,11 +1,11 @@
 import React from 'react';
-import CheckersBoard from './checkersboard';
+import CheckersBoard from './CheckersBoard';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <CheckersBoard /> {/* Render the RockPaperScissors component */}
+        <CheckersBoard /> {}
       </header>
     </div>
   );

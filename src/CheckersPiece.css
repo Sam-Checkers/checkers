@@ -1,0 +1,23 @@
+.piece {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  margin: 10%;
+  transition: transform 0.2s;
+}
+
+.red {
+  background-color: #ff0000;
+}
+
+.black {
+  background-color: #000000;
+}
+
+.king {
+  border: 2px solid gold;/
+}
+
+.selected {
+  transform: scale(1.1);
+}
