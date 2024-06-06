@@ -14,10 +14,6 @@
   background-color: #000000;
 }
 
-.king {
-  border: 2px solid gold;/
-}
-
 .selected {
   transform: scale(1.1);
 }

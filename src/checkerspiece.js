@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import './CheckersPiece.css';
 
-const CheckersPiece = ({ color, isKing, isSelected }) => {
-  const pieceClassName = `piece ${color} ${isKing ? 'king' : ''} ${isSelected ? 'selected' : ''}`;
+const CheckersPiece = ({ color, position }) => {
+  const [selected, setSelected] = useState(false);
+  const pieceRef = useRef(null);
 
-  return <div className={pieceClassName} />;
+  const handleClick = () => {
+    setSelected(!selected);
+    if (!selected) {
+      console.log('Selected position:', position);
+    }
+  };
+
+  return (
+    <div
+      ref={pieceRef}
+      className={`piece ${color} ${selected ? 'selected' : ''}`}
+      onClick={handleClick}
+    >
+    </div>
+  );
 };
 
 export default CheckersPiece;
