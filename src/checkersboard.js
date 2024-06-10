@@ -27,12 +27,20 @@ const CheckersBoard = () => {
   const handleSquareClick = (row, col) => {
     if (selectedPiece) {
       const { row: selectedRow, col: selectedCol, color: selectedColor } = selectedPiece;
-
-      const newBoardState = [...boardState];
-      newBoardState[row][col] = selectedColor;
-      newBoardState[selectedRow][selectedCol] = null;
-      setBoardState(newBoardState);
-      setSelectedPiece(null);
+  
+      const forwardDirection = selectedColor === 'red' ? 1 : -1;
+  
+      const isValidForwardDiagonalMove = row - selectedRow === forwardDirection && Math.abs(col - selectedCol) === 1;
+  
+      if (isValidForwardDiagonalMove) {
+        const newBoardState = [...boardState];
+        newBoardState[row][col] = selectedColor;
+        newBoardState[selectedRow][selectedCol] = null;
+        setBoardState(newBoardState);
+        setSelectedPiece(null);
+      } else {
+        console.log('Invalid move: Pieces can only move forward diagonally.');
+      }
     }
   };
 
