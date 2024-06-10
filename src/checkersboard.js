@@ -28,18 +28,40 @@ const CheckersBoard = () => {
     if (selectedPiece) {
       const { row: selectedRow, col: selectedCol, color: selectedColor } = selectedPiece;
   
+      // Determine the direction of movement based on the color of the piece
       const forwardDirection = selectedColor === 'red' ? 1 : -1;
   
+      // Check if the clicked square is a valid forward diagonal move
       const isValidForwardDiagonalMove = row - selectedRow === forwardDirection && Math.abs(col - selectedCol) === 1;
   
       if (isValidForwardDiagonalMove) {
+        // Update the board state to move the piece to the clicked square
         const newBoardState = [...boardState];
         newBoardState[row][col] = selectedColor;
         newBoardState[selectedRow][selectedCol] = null;
         setBoardState(newBoardState);
         setSelectedPiece(null);
       } else {
-        console.log('Invalid move: Pieces can only move forward diagonally.');
+        // Check if a jump over an opposing piece is possible
+        const opposingPieceRow = (row + selectedRow) / 2;
+        const opposingPieceCol = (col + selectedCol) / 2;
+  
+        if (
+          boardState[opposingPieceRow] &&
+          boardState[opposingPieceRow][opposingPieceCol] &&
+          boardState[opposingPieceRow][opposingPieceCol] !== selectedColor
+        ) {
+          // Perform the jump by updating the board state
+          const newBoardState = [...boardState];
+          newBoardState[row][col] = selectedColor;
+          newBoardState[selectedRow][selectedCol] = null;
+          newBoardState[opposingPieceRow][opposingPieceCol] = null;
+          setBoardState(newBoardState);
+          setSelectedPiece(null);
+        } else {
+          // Handle invalid move (e.g., show an error message)
+          console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
+        }
       }
     }
   };
