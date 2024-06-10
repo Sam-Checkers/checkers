@@ -7,11 +7,11 @@ const CheckersBoard = () => {
     [null, 'red', null, 'red', null, 'red', null, 'red'],
     ['red', null, 'red', null, 'red', null, 'red', null],
     [null, 'red', null, 'red', null, 'red', null, 'red'],
-    ['null', null, 'null', null, 'null', null, 'null', null],
     [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    ['black', null, 'black', null, 'black', null, 'black', null],
     [null, 'black', null, 'black', null, 'black', null, 'black'],
     ['black', null, 'black', null, 'black', null, 'black', null],
-    [null, 'black', null, 'black', null, 'black', null, 'black']
   ];
 
   const [boardState, setBoardState] = useState(initialBoardState);
