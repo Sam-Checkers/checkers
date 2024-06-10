@@ -1,35 +1,40 @@
 import React, { useState } from 'react';
-import CheckersPiece from './CheckersPiece';
 import './CheckersBoard.css';
+import CheckersPiece from './CheckersPiece';
 
 const CheckersBoard = () => {
-  const [pieces] = useState([
-    { color: 'red', position: '0-1' },
-    { color: 'red', position: '0-3' },
-    { color: 'red', position: '0-5' },
-    { color: 'red', position: '0-7' },
-    { color: 'red', position: '1-0' },
-    { color: 'red', position: '1-2' },
-    { color: 'red', position: '1-4' },
-    { color: 'red', position: '1-6' },
-    { color: 'red', position: '2-1' },
-    { color: 'red', position: '2-3' },
-    { color: 'red', position: '2-5' },
-    { color: 'red', position: '2-7' },
-    { color: 'black', position: '5-0' },
-    { color: 'black', position: '5-2' },
-    { color: 'black', position: '5-4' },
-    { color: 'black', position: '5-6' },
-    { color: 'black', position: '6-1' },
-    { color: 'black', position: '6-3' },
-    { color: 'black', position: '6-5' },
-    { color: 'black', position: '6-7' },
-    { color: 'black', position: '7-0' },
-    { color: 'black', position: '7-2' },
-    { color: 'black', position: '7-4' },
-    { color: 'black', position: '7-6' },
+  const initialBoardState = [
+    [null, 'red', null, 'red', null, 'red', null, 'red'],
+    ['red', null, 'red', null, 'red', null, 'red', null],
+    [null, 'red', null, 'red', null, 'red', null, 'red'],
+    ['null', null, 'null', null, 'null', null, 'null', null],
+    [null, null, null, null, null, null, null, null],
+    [null, 'black', null, 'black', null, 'black', null, 'black'],
+    ['black', null, 'black', null, 'black', null, 'black', null],
+    [null, 'black', null, 'black', null, 'black', null, 'black']
+  ];
 
-  ]);
+  const [boardState, setBoardState] = useState(initialBoardState);
+  const [selectedPiece, setSelectedPiece] = useState(null);
+
+  const handlePieceClick = (row, col) => {
+    const pieceColor = boardState[row][col];
+    if (pieceColor) {
+      setSelectedPiece({ row, col, color: pieceColor });
+    }
+  };
+
+  const handleSquareClick = (row, col) => {
+    if (selectedPiece) {
+      const { row: selectedRow, col: selectedCol, color: selectedColor } = selectedPiece;
+
+      const newBoardState = [...boardState];
+      newBoardState[row][col] = selectedColor;
+      newBoardState[selectedRow][selectedCol] = null;
+      setBoardState(newBoardState);
+      setSelectedPiece(null);
+    }
+  };
 
   const renderBoard = () => {
     const board = [];
@@ -37,14 +42,19 @@ const CheckersBoard = () => {
       for (let col = 0; col < 8; col++) {
         const squareColor = (row + col) % 2 === 0 ? 'light' : 'dark';
         const position = `${row}-${col}`;
-        const piece = pieces.find((p) => p.position === position);
-        board.push(
-          <div key={position} className={`square ${squareColor}`}>
-            {piece && (
-              <CheckersPiece color={piece.color} position={position}/>
-            )}
-          </div>
-        );
+        const pieceColor = boardState[row][col];
+        if (pieceColor) {
+          board.push(
+            <div key={position} className={`square ${squareColor}`} onClick={() => handlePieceClick(row, col)}>
+              <CheckersPiece color={pieceColor} isKing={false} />
+            </div>
+          );
+        } else {
+          board.push(
+            <div key={position} className={`square ${squareColor}`} onClick={() => handleSquareClick(row, col)}>
+            </div>
+          );
+        }
       }
     }
     return board;
