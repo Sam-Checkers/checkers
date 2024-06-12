@@ -30,52 +30,60 @@ const CheckersBoard = () => {
   
       let forwardDirection;
       if (isKing) {
-        forwardDirection = 1;
+        forwardDirection = 1; // Kings can move in both directions
       } else {
-        forwardDirection = selectedColor === 'red' ? 1 : -1;
+        forwardDirection = selectedColor === 'red' ? 1 : -1; // Red pieces move downward, black pieces move upward
       }
-      const isValidForwardDiagonalMove = row - selectedRow === forwardDirection && Math.abs(col - selectedCol) === 1;
+  
+      const rowDiff = row - selectedRow;
+      const colDiff = Math.abs(col - selectedCol);
+  
+      // Check if the move is a valid forward diagonal move
+      const isValidForwardDiagonalMove = rowDiff === forwardDirection && colDiff === 1;
   
       if (isValidForwardDiagonalMove) {
-        if (!isKing) {
-          if ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0)) {
-            newBoardState[row][col] = { color: selectedColor, isKing: true };
-            newBoardState[selectedRow][selectedCol] = null;
-            console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
-          } else {
-            newBoardState[row][col] = selectedColor;
-            newBoardState[selectedRow][selectedCol] = null;
-          }
-        }
-  
-        setBoardState(newBoardState);
-        setSelectedPiece(null);
-      } else {
-        const opposingPieceRow = (row + selectedRow) / 2;
-        const opposingPieceCol = (col + selectedCol) / 2;
-  
-        if (
-          boardState[opposingPieceRow] &&
-          boardState[opposingPieceRow][opposingPieceCol] &&
-          boardState[opposingPieceRow][opposingPieceCol] !== selectedColor
-        ) {
-          const newBoardState = [...boardState];
+        // Check if the target position is empty
+        if (!newBoardState[row][col]) {
           newBoardState[row][col] = selectedColor;
           newBoardState[selectedRow][selectedCol] = null;
-          newBoardState[opposingPieceRow][opposingPieceCol] = null;
-          setBoardState(newBoardState);
-          setSelectedPiece(null);
-          if ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0)) {
+  
+          // Check if the piece becomes a king after reaching the end of the board
+          if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
             newBoardState[row][col] = { color: selectedColor, isKing: true };
-            newBoardState[selectedRow][selectedCol] = null;
-            console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king after capturing an opponent!`);
+            console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
           }
   
           setBoardState(newBoardState);
           setSelectedPiece(null);
         } else {
-          console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
+          // Check if the target position contains an opponent's piece
+          const opposingPieceRow = (row + selectedRow) / 2;
+          const opposingPieceCol = (col + selectedCol) / 2;
+  
+          if (
+            newBoardState[opposingPieceRow] &&
+            newBoardState[opposingPieceRow][opposingPieceCol] &&
+            newBoardState[opposingPieceRow][opposingPieceCol] !== selectedColor
+          ) {
+            // Capture the opponent's piece
+            newBoardState[row][col] = selectedColor;
+            newBoardState[selectedRow][selectedCol] = null;
+            newBoardState[opposingPieceRow][opposingPieceCol] = null;
+  
+            // Check if the piece becomes a king after capturing the opponent
+            if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
+              newBoardState[row][col] = { color: selectedColor, isKing: true };
+              console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king after capturing an opponent!`);
+            }
+  
+            setBoardState(newBoardState);
+            setSelectedPiece(null);
+          } else {
+            console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
+          }
         }
+      } else {
+        console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
       }
     }
   };
