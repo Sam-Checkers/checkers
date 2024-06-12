@@ -46,7 +46,7 @@ const CheckersBoard = () => {
           newBoardState[selectedRow][selectedCol] = null;
   
           if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
-            newBoardState[row][col] = { color: selectedColor, isKing: true };
+            newBoardState[row][col].isKing = true;
             console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
           }
   
@@ -77,7 +77,36 @@ const CheckersBoard = () => {
           }
         }
       } else {
-        console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
+        const jumpRowDiff = row - selectedRow;
+        const jumpColDiff = col - selectedCol;
+        const isJumpOverOpponent = jumpRowDiff === forwardDirection * 2 && Math.abs(jumpColDiff) === 2;
+  
+        if (isJumpOverOpponent) {
+          const jumpedOpponentRow = selectedRow + forwardDirection;
+          const jumpedOpponentCol = selectedCol + (jumpColDiff > 0 ? 1 : -1);
+  
+          if (
+            newBoardState[jumpedOpponentRow] &&
+            newBoardState[jumpedOpponentRow][jumpedOpponentCol] &&
+            newBoardState[jumpedOpponentRow][jumpedOpponentCol] !== selectedColor
+          ) {
+            newBoardState[row][col] = newBoardState[selectedRow][selectedCol];
+            newBoardState[selectedRow][selectedCol] = null;
+            newBoardState[jumpedOpponentRow][jumpedOpponentCol] = null;
+  
+            if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
+              newBoardState[row][col].isKing = true;
+              console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king after jumping over an opponent!`);
+            }
+  
+            setBoardState(newBoardState);
+            setSelectedPiece(null);
+          } else {
+            console.log('Invalid move: Pieces can only jump over an opposing piece.');
+          }
+        } else {
+          console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
+        }
       }
     }
   };
