@@ -65,6 +65,14 @@ const CheckersBoard = () => {
           newBoardState[opposingPieceRow][opposingPieceCol] = null;
           setBoardState(newBoardState);
           setSelectedPiece(null);
+          if ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0)) {
+            newBoardState[row][col] = { color: selectedColor, isKing: true };
+            newBoardState[selectedRow][selectedCol] = null;
+            console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king after capturing an opponent!`);
+          }
+  
+          setBoardState(newBoardState);
+          setSelectedPiece(null);
         } else {
           console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
         }
