@@ -23,26 +23,34 @@ const CheckersBoard = () => {
       setSelectedPiece({ row, col, color: pieceColor });
     }
   };
-
   const handleSquareClick = (row, col) => {
     if (selectedPiece) {
-      const { row: selectedRow, col: selectedCol, color: selectedColor } = selectedPiece;
+      const { row: selectedRow, col: selectedCol, color: selectedColor, isKing } = selectedPiece;
+      const newBoardState = [...boardState];
   
-      // Determine the direction of movement based on the color of the piece
-      const forwardDirection = selectedColor === 'red' ? 1 : -1;
-  
-      // Check if the clicked square is a valid forward diagonal move
+      let forwardDirection;
+      if (isKing) {
+        forwardDirection = 1;
+      } else {
+        forwardDirection = selectedColor === 'red' ? 1 : -1;
+      }
       const isValidForwardDiagonalMove = row - selectedRow === forwardDirection && Math.abs(col - selectedCol) === 1;
   
       if (isValidForwardDiagonalMove) {
-        // Update the board state to move the piece to the clicked square
-        const newBoardState = [...boardState];
-        newBoardState[row][col] = selectedColor;
-        newBoardState[selectedRow][selectedCol] = null;
+        if (!isKing) {
+          if ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0)) {
+            newBoardState[row][col] = { color: selectedColor, isKing: true };
+            newBoardState[selectedRow][selectedCol] = null;
+            console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
+          } else {
+            newBoardState[row][col] = selectedColor;
+            newBoardState[selectedRow][selectedCol] = null;
+          }
+        }
+  
         setBoardState(newBoardState);
         setSelectedPiece(null);
       } else {
-        // Check if a jump over an opposing piece is possible
         const opposingPieceRow = (row + selectedRow) / 2;
         const opposingPieceCol = (col + selectedCol) / 2;
   
@@ -51,7 +59,6 @@ const CheckersBoard = () => {
           boardState[opposingPieceRow][opposingPieceCol] &&
           boardState[opposingPieceRow][opposingPieceCol] !== selectedColor
         ) {
-          // Perform the jump by updating the board state
           const newBoardState = [...boardState];
           newBoardState[row][col] = selectedColor;
           newBoardState[selectedRow][selectedCol] = null;
@@ -59,7 +66,6 @@ const CheckersBoard = () => {
           setBoardState(newBoardState);
           setSelectedPiece(null);
         } else {
-          // Handle invalid move (e.g., show an error message)
           console.log('Invalid move: Pieces can only move forward diagonally or jump over an opposing piece.');
         }
       }
