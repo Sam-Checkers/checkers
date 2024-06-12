@@ -26,28 +26,25 @@ const CheckersBoard = () => {
   const handleSquareClick = (row, col) => {
     if (selectedPiece) {
       const { row: selectedRow, col: selectedCol, color: selectedColor, isKing } = selectedPiece;
-      const newBoardState = [...boardState];
+      const newBoardState = boardState.map(row => [...row]);
   
       let forwardDirection;
       if (isKing) {
-        forwardDirection = 1; // Kings can move in both directions
+        forwardDirection = 1;
       } else {
-        forwardDirection = selectedColor === 'red' ? 1 : -1; // Red pieces move downward, black pieces move upward
+        forwardDirection = selectedColor === 'red' ? 1 : -1;
       }
   
       const rowDiff = row - selectedRow;
       const colDiff = Math.abs(col - selectedCol);
   
-      // Check if the move is a valid forward diagonal move
       const isValidForwardDiagonalMove = rowDiff === forwardDirection && colDiff === 1;
   
       if (isValidForwardDiagonalMove) {
-        // Check if the target position is empty
         if (!newBoardState[row][col]) {
-          newBoardState[row][col] = selectedColor;
+          newBoardState[row][col] = newBoardState[selectedRow][selectedCol];
           newBoardState[selectedRow][selectedCol] = null;
   
-          // Check if the piece becomes a king after reaching the end of the board
           if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
             newBoardState[row][col] = { color: selectedColor, isKing: true };
             console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
@@ -56,7 +53,6 @@ const CheckersBoard = () => {
           setBoardState(newBoardState);
           setSelectedPiece(null);
         } else {
-          // Check if the target position contains an opponent's piece
           const opposingPieceRow = (row + selectedRow) / 2;
           const opposingPieceCol = (col + selectedCol) / 2;
   
@@ -65,14 +61,12 @@ const CheckersBoard = () => {
             newBoardState[opposingPieceRow][opposingPieceCol] &&
             newBoardState[opposingPieceRow][opposingPieceCol] !== selectedColor
           ) {
-            // Capture the opponent's piece
-            newBoardState[row][col] = selectedColor;
+            newBoardState[row][col] = newBoardState[selectedRow][selectedCol];
             newBoardState[selectedRow][selectedCol] = null;
             newBoardState[opposingPieceRow][opposingPieceCol] = null;
   
-            // Check if the piece becomes a king after capturing the opponent
             if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
-              newBoardState[row][col] = { color: selectedColor, isKing: true };
+              newBoardState[row][col].isKing = true;
               console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king after capturing an opponent!`);
             }
   
