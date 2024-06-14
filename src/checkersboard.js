@@ -46,7 +46,7 @@ const CheckersBoard = () => {
           newBoardState[selectedRow][selectedCol] = null;
   
           if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
-            newBoardState[row][col].isKing = true;
+            newBoardState[row][col] = { color: newBoardState[row][col], isKing: true };
             console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
           }
   
@@ -66,7 +66,7 @@ const CheckersBoard = () => {
             newBoardState[opposingPieceRow][opposingPieceCol] = null;
   
             if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
-              newBoardState[row][col].isKing = true;
+              newBoardState[row][col] = { color: newBoardState[row][col], isKing: true };
               console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king after capturing an opponent!`);
             }
   
@@ -95,7 +95,7 @@ const CheckersBoard = () => {
             newBoardState[jumpedOpponentRow][jumpedOpponentCol] = null;
   
             if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
-              newBoardState[row][col].isKing = true;
+              newBoardState[row][col] = { color: newBoardState[row][col], isKing: true };
               console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king after jumping over an opponent!`);
             }
   
