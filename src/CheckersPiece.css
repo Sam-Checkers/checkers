@@ -19,6 +19,6 @@
 }
 
 .king {
-  border: 3px solid gold; /* Example border style for king pieces */
-  box-sizing: border-box; /* Include border in the width and height of the piece */
+  border: 3px solid gold;
+  box-sizing: border-box;
 }

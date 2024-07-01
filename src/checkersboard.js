@@ -27,13 +27,22 @@ const CheckersBoard = () => {
     if (selectedPiece) {
       const { row: selectedRow, col: selectedCol, color: selectedColor, isKing } = selectedPiece;
   
-      const isValidDiagonalMove = Math.abs(row - selectedRow) === 1 && Math.abs(col - selectedCol) === 1;
+      const isForwardDiagonalMove = isKing ? Math.abs(row - selectedRow) === 1 : (row - selectedRow === (selectedColor === 'red' ? 1 : -1)) && Math.abs(col - selectedCol) === 1;
   
-      if (isValidDiagonalMove) {
+      if (isForwardDiagonalMove) {
         const newBoardState = [...boardState];
         newBoardState[row][col] = selectedColor;
         newBoardState[selectedRow][selectedCol] = null;
         setBoardState(newBoardState);
+  
+        if (!isKing) {
+          if ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0)) {
+            const updatedSelectedPiece = { row: selectedRow, col: selectedCol, color: selectedColor, isKing: true };
+            setSelectedPiece(updatedSelectedPiece);
+            console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
+          }
+        }
+  
         setSelectedPiece(null);
       } else {
         const opposingPieceRow = (row + selectedRow) / 2;
@@ -51,7 +60,7 @@ const CheckersBoard = () => {
           setBoardState(newBoardState);
           setSelectedPiece(null);
         } else {
-          console.log('Invalid move: Pieces can only move diagonally or jump over an opposing piece.');
+          console.log('Invalid move: Non-king pieces can only move forward diagonally.');
         }
       }
     }
@@ -64,13 +73,16 @@ const CheckersBoard = () => {
         const squareColor = (row + col) % 2 === 0 ? 'light' : 'dark';
         const position = `${row}-${col}`;
         const pieceColor = boardState[row][col];
-        const isRedKing = pieceColor === 'red' && row === 7;
-        const isBlackKing = pieceColor === 'black' && row === 0;
-        const isKing = isRedKing || isBlackKing;
+        let isKing = false;
+        if (pieceColor === 'red' && row === 7) {
+          isKing = true;
+        } else if (pieceColor === 'black' && row === 0) {
+          isKing = true;
+        }
         if (pieceColor) {
           board.push(
             <div key={position} className={`square ${squareColor}`} onClick={() => handlePieceClick(row, col)}>
-              <CheckersPiece color={pieceColor} isKing={isKing} />
+              <CheckersPiece color={pieceColor} isKing={isKing} />  {/* Pass the isKing prop to CheckersPiece */}
             </div>
           );
         } else {
