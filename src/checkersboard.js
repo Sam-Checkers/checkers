@@ -27,18 +27,15 @@ const CheckersBoard = () => {
     if (selectedPiece) {
       const { row: selectedRow, col: selectedCol, color: selectedColor, isKing } = selectedPiece;
   
-      // Check if the clicked square is a valid diagonal move
       const isValidDiagonalMove = Math.abs(row - selectedRow) === 1 && Math.abs(col - selectedCol) === 1;
   
       if (isValidDiagonalMove) {
-        // Update the board state to move the piece to the clicked square
         const newBoardState = [...boardState];
         newBoardState[row][col] = selectedColor;
         newBoardState[selectedRow][selectedCol] = null;
         setBoardState(newBoardState);
         setSelectedPiece(null);
       } else {
-        // Check if a jump over an opposing piece is possible
         const opposingPieceRow = (row + selectedRow) / 2;
         const opposingPieceCol = (col + selectedCol) / 2;
   
@@ -47,7 +44,6 @@ const CheckersBoard = () => {
           boardState[opposingPieceRow][opposingPieceCol] &&
           boardState[opposingPieceRow][opposingPieceCol] !== selectedColor
         ) {
-          // Perform the jump by updating the board state
           const newBoardState = [...boardState];
           newBoardState[row][col] = selectedColor;
           newBoardState[selectedRow][selectedCol] = null;
@@ -55,7 +51,6 @@ const CheckersBoard = () => {
           setBoardState(newBoardState);
           setSelectedPiece(null);
         } else {
-          // Handle invalid move (e.g., show an error message)
           console.log('Invalid move: Pieces can only move diagonally or jump over an opposing piece.');
         }
       }
