@@ -27,23 +27,27 @@ const CheckersBoard = () => {
     if (selectedPiece) {
       const { row: selectedRow, col: selectedCol, color: selectedColor, isKing } = selectedPiece;
   
-      const isForwardDiagonalMove = isKing ? Math.abs(row - selectedRow) === 1 : (row - selectedRow === (selectedColor === 'red' ? 1 : -1)) && Math.abs(col - selectedCol) === 1;
+      const isValidDiagonalMove = Math.abs(row - selectedRow) === 1 && Math.abs(col - selectedCol) === 1;
   
-      if (isForwardDiagonalMove) {
-        const newBoardState = [...boardState];
-        newBoardState[row][col] = selectedColor;
-        newBoardState[selectedRow][selectedCol] = null;
-        setBoardState(newBoardState);
+      if (isValidDiagonalMove) {
+        if (isKing || (selectedColor === 'red' && row > selectedRow) || (selectedColor === 'black' && row < selectedRow)) {
+          const newBoardState = [...boardState];
+          newBoardState[row][col] = selectedColor;
+          newBoardState[selectedRow][selectedCol] = null;
+          setBoardState(newBoardState);
   
-        if (!isKing) {
-          if ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0)) {
-            const updatedSelectedPiece = { row: selectedRow, col: selectedCol, color: selectedColor, isKing: true };
-            setSelectedPiece(updatedSelectedPiece);
-            console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
+          if (!isKing) {
+            if ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0)) {
+              const updatedSelectedPiece = { row: selectedRow, col: selectedCol, color: selectedColor, isKing: true };
+              setSelectedPiece(updatedSelectedPiece);
+              console.log(`Piece at (${selectedRow}, ${selectedCol}) has become a king!`);
+            }
           }
-        }
   
-        setSelectedPiece(null);
+          setSelectedPiece(null);
+        } else {
+          console.log('Invalid move: Non-king pieces can only move forward diagonally.');
+        }
       } else {
         const opposingPieceRow = (row + selectedRow) / 2;
         const opposingPieceCol = (col + selectedCol) / 2;
@@ -60,7 +64,7 @@ const CheckersBoard = () => {
           setBoardState(newBoardState);
           setSelectedPiece(null);
         } else {
-          console.log('Invalid move: Non-king pieces can only move forward diagonally.');
+          console.log('Invalid move: Pieces can only move diagonally or jump over an opposing piece.');
         }
       }
     }
@@ -82,7 +86,7 @@ const CheckersBoard = () => {
         if (pieceColor) {
           board.push(
             <div key={position} className={`square ${squareColor}`} onClick={() => handlePieceClick(row, col)}>
-              <CheckersPiece color={pieceColor} isKing={isKing} />  {/* Pass the isKing prop to CheckersPiece */}
+              <CheckersPiece color={pieceColor} isKing={isKing} />
             </div>
           );
         } else {
