@@ -17,3 +17,8 @@
 .selected {
   transform: scale(1.1);
 }
+
+.king {
+  border: 3px solid gold; /* Example border style for king pieces */
+  box-sizing: border-box; /* Include border in the width and height of the piece */
+}
