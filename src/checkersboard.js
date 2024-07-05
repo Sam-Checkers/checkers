@@ -47,10 +47,11 @@ const CheckersBoard = () => {
           newBoardState[selectedRow][selectedCol] = null;
   
           if (!isKing && ((selectedColor === 'red' && row === 7) || (selectedColor === 'black' && row === 0))) {
-            newBoardState[row][col] = selectedColor === 'red' ? 'red-king' : 'black-king';
+            // Replace the regular piece with a king piece
+            newBoardState[row][col] = selectedColor === 'red' ? 'red-king' : 'black-king'; // Assuming 'red-king' and 'black-king' represent king pieces in the board state
             newBoardState[selectedRow][selectedCol] = null;
-            setBoardState(newBoardState);
-            setSelectedPiece(null);
+            setBoardState(newBoardState); // Update the board state
+            setSelectedPiece(null); // Reset the selected piece
             console.log(`Piece at (${selectedRow}, ${selectedCol}) has been replaced with a king piece!`);
           } else {
             setBoardState(newBoardState);
